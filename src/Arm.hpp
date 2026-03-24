@@ -16,7 +16,8 @@
  * Stores the configured servo ports and provides a high-level API to set the arm
  * to a desired position.
  */
-class Arm {
+class Arm
+{
 private:
 	/// Servo port for the shoulder joint.
 	const int ShoulderServoPort;
@@ -39,7 +40,8 @@ public:
 	/**
 	 * @brief Target arm configuration (shoulder, elbow, claw).
 	 */
-	struct ArmPosition {
+	struct ArmPosition
+	{
 		/// Desired shoulder servo position.
 		const int ShoulderPosition;
 

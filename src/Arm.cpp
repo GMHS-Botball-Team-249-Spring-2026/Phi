@@ -13,7 +13,7 @@ void Arm::SetServoPosition(int port, int position)
     enable_servo(port);
     if (get_servo_position(port) < position)
     {
-        for (int i = get_servo_position(port); i < position; i+=5)
+        for (int i = get_servo_position(port); i < position; i += 5)
         {
             set_servo_position(port, i);
             msleep(10);
@@ -21,7 +21,7 @@ void Arm::SetServoPosition(int port, int position)
     }
     else if (get_servo_position(port) > position)
     {
-        for (int i = get_servo_position(port); i > position; i-=5)
+        for (int i = get_servo_position(port); i > position; i -= 5)
         {
             set_servo_position(port, i);
             msleep(10);
@@ -34,8 +34,7 @@ void Arm::SetServoPosition(int port, int position)
     disable_servo(port);
 }
 
-Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort) :
-	ShoulderServoPort(shoulderServoPort), ElbowServoPort(elbowServoPort), ClawServoPort(clawServoPort)
+Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort) : ShoulderServoPort(shoulderServoPort), ElbowServoPort(elbowServoPort), ClawServoPort(clawServoPort)
 {
     // UpdateCurrentServoPositions();
 }
@@ -43,10 +42,10 @@ Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort) :
 void Arm::SetPosition(ArmPosition position)
 {
     // Init threads
-	std::thread ShoulderThread(&Arm::SetServoPosition, this, ShoulderServoPort, position.ShoulderPosition);
+    std::thread ShoulderThread(&Arm::SetServoPosition, this, ShoulderServoPort, position.ShoulderPosition);
     std::thread ElbowThread(&Arm::SetServoPosition, this, ElbowServoPort, position.ElbowPosition);
     std::thread ClawThread(&Arm::SetServoPosition, this, ClawServoPort, position.ClawPosition);
-    
+
     // Wait for threads to exit before returning
     ShoulderThread.join();
     ElbowThread.join();

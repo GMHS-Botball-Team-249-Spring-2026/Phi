@@ -9,10 +9,10 @@
 
 void DriveTrain::CAMPC() // Clear all motor position counters
 {
-	for(int i = 0; i < 4; i++)
-	{
-		cmpc(this->AM[i]);
-	}
+    for (int i = 0; i < 4; i++)
+    {
+        cmpc(this->AM[i]);
+    }
 }
 
 void DriveTrain::WaitForTicksAndStop(int target_ticks, int port)
@@ -26,67 +26,67 @@ void DriveTrain::WaitForTicksAndStop(int target_ticks, int port)
 
 void DriveTrain::WaitForTicksAndStop(int target_ticks, std::array<bool, 4> active_motors)
 {
-	int active_count = 0;
-	for (bool is_active : active_motors)
-	{
-		if (is_active) active_count++;
-	}
+    int active_count = 0;
+    for (bool is_active : active_motors)
+    {
+        if (is_active)
+            active_count++;
+    }
 
-	while (active_count > 0)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			if (active_motors[i] && abs(gmpc(this->AM[i])) >= abs(target_ticks))
-			{
-				off(this->AM[i]);
-				active_motors[i] = false;
-				active_count--;
-			}
-		}
-		msleep(10);
-	}
+    while (active_count > 0)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (active_motors[i] && abs(gmpc(this->AM[i])) >= abs(target_ticks))
+            {
+                off(this->AM[i]);
+                active_motors[i] = false;
+                active_count--;
+            }
+        }
+        msleep(10);
+    }
 }
 
-DriveTrain::DriveTrain(int FL, int FR, int RL, int RR, int FL_IR_PORT, int FR_IR_PORT) :
-    FL(FL), FR(FR), RL(RL), RR(RR),
-    AM{FL, FR, RL, RR},
-    FL_RR{FL, RR},
-    FR_RL{FR, RL},
-    FM{FL, FR},
-    RM{RL, RR},
-    LSM{FL, RL},
-    RSM{FR, RR},
-    FL_IR_PORT(FL_IR_PORT),
-    FR_IR_PORT(FR_IR_PORT),
-    FL_THRESHOLD(0), // Initialize to default value
-    FR_THRESHOLD(0) // Initialize to default value
+DriveTrain::DriveTrain(int FL, int FR, int RL, int RR, int FL_IR_PORT, int FR_IR_PORT) : FL(FL), FR(FR), RL(RL), RR(RR),
+                                                                                         AM{FL, FR, RL, RR},
+                                                                                         FL_RR{FL, RR},
+                                                                                         FR_RL{FR, RL},
+                                                                                         FM{FL, FR},
+                                                                                         RM{RL, RR},
+                                                                                         LSM{FL, RL},
+                                                                                         RSM{FR, RR},
+                                                                                         FL_IR_PORT(FL_IR_PORT),
+                                                                                         FR_IR_PORT(FR_IR_PORT),
+                                                                                         FL_THRESHOLD(0), // Initialize to default value
+                                                                                         FR_THRESHOLD(0)  // Initialize to default value
 {
-	// Initialize performance ratings to nominal values
-	this->FLP = 1.00;
-	this->FRP = 1.00;
-	this->RLP = 1.00;
-	this->RRP = 1.00;
+    // Initialize performance ratings to nominal values
+    this->FLP = 1.00;
+    this->FRP = 1.00;
+    this->RLP = 1.00;
+    this->RRP = 1.00;
 
-	this->PM[0] = this->FLP;
-	this->PM[1] = this->FRP;
-	this->PM[2] = this->RLP;
-	this->PM[3] = this->RRP;
+    this->PM[0] = this->FLP;
+    this->PM[1] = this->FRP;
+    this->PM[2] = this->RLP;
+    this->PM[3] = this->RRP;
 
-	// Clear all motor position counters
-	CAMPC();
+    // Clear all motor position counters
+    CAMPC();
 }
 
 void DriveTrain::SetPerformance(double FLP, double FRP, double RLP, double RRP)
 {
-	this->FLP = FLP;
-	this->FRP = FRP;
-	this->RLP = RLP;
-	this->RRP = RRP;
+    this->FLP = FLP;
+    this->FRP = FRP;
+    this->RLP = RLP;
+    this->RRP = RRP;
 
-	this->PM[0] = this->FLP;
-	this->PM[1] = this->FRP;
-	this->PM[2] = this->RLP;
-	this->PM[3] = this->RRP;
+    this->PM[0] = this->FLP;
+    this->PM[1] = this->FRP;
+    this->PM[2] = this->RLP;
+    this->PM[3] = this->RRP;
 }
 
 void DriveTrain::SetLineTrackingThresholds(int FL_WHITE, int FR_WHITE, int FL_BLACK, int FR_BLACK)
@@ -97,35 +97,35 @@ void DriveTrain::SetLineTrackingThresholds(int FL_WHITE, int FR_WHITE, int FL_BL
     this->FR_BLACK_READING = FR_BLACK;
 
     // Set thresholds as midpoint between white and black readings
-    const_cast<int&>(this->FL_THRESHOLD) = (FL_WHITE + FL_BLACK) / 2;
-    const_cast<int&>(this->FR_THRESHOLD) = (FR_WHITE + FR_BLACK) / 2;
+    const_cast<int &>(this->FL_THRESHOLD) = (FL_WHITE + FL_BLACK) / 2;
+    const_cast<int &>(this->FR_THRESHOLD) = (FR_WHITE + FR_BLACK) / 2;
 }
 
 // Positive direction is forward
 void DriveTrain::Drive(int ticks, int speed)
 {
-	CAMPC();
-	int target_ticks = abs(ticks);
-    
+    CAMPC();
+    int target_ticks = abs(ticks);
+
     // Start motors at specified speed
-	for (int i = 0; i < 4; i++)
-	{
-		mav(this->AM[i], (int)(speed * this->PM[i]));
-	}
+    for (int i = 0; i < 4; i++)
+    {
+        mav(this->AM[i], (int)(speed * this->PM[i]));
+    }
 
     // WaitForTicksAndStop(target_ticks, {true, true, true, true});
     WaitForTicksAndStop(target_ticks, 0);
-	CAMPC();
+    CAMPC();
 }
 
 void DriveTrain::DriveForward(int ticks, int speed)
 {
-	Drive(ticks, speed);
+    Drive(ticks, speed);
 }
 
 void DriveTrain::DriveBackward(int ticks, int speed)
 {
-	Drive(ticks, -speed);
+    Drive(ticks, -speed);
 }
 
 void DriveTrain::DriveLineTracking(int ticks, int speed)
@@ -171,7 +171,6 @@ void DriveTrain::DriveLineTracking(int ticks, int speed)
     }
     ao();
     CAMPC();
-    
 }
 
 void DriveTrain::DriveForwardLineTracking(int ticks, int speed)
@@ -185,30 +184,99 @@ void DriveTrain::DriveBackwardLineTracking(int ticks, int speed)
     DriveLineTracking(ticks, -speed);
 }
 
+void DriveTrain::SquareWithLine(int speed)
+{
+    int FL_READING = analog(this->FL_IR_PORT);
+    int FR_READING = analog(this->FR_IR_PORT);
+
+    bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
+    bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
+
+    int intersects = 0;
+
+    while (!ON_LINE_FL || !ON_LINE_FR)
+    {
+        if (!ON_LINE_FL && !ON_LINE_FR)
+        {
+            // Both sensors off line, drive straight
+            for (int i = 0; i < 4; i++)
+            {
+                mav(this->AM[i], (int)(speed * this->PM[i]));
+            }
+        }
+        else if (ON_LINE_FL && !ON_LINE_FR)
+        {
+            // Left sensor on line, right sensor off line, veer right
+            for (int i = 0; i < 4; i++)
+            {
+                mav(this->RSM[i], (int)(speed));
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                mav(this->LSM[i], (int)(-speed * 2));
+            }
+        }
+        else if (!ON_LINE_FL && ON_LINE_FR)
+        {
+            // Right sensor on line, left sensor off line, veer left
+            for (int i = 0; i < 4; i++)
+            {
+                mav(this->LSM[i], (int)(speed));
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                mav(this->RSM[i], (int)(-speed * 2));
+            }
+        }
+
+        else if (ON_LINE_FL && ON_LINE_FR)
+        {
+            // Both sensors on line drive backwards until they both aren't on the line so accuratly square
+            for (int i = 0; i < 4; i++)
+            {
+                mav(this->AM[i], (int)(-speed * this->PM[i]));
+            }
+        }
+
+        FL_READING = analog(this->FL_IR_PORT);
+        FR_READING = analog(this->FR_IR_PORT);
+
+        ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
+        ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
+
+        if (ON_LINE_FL || ON_LINE_FR)
+        {
+            intersects++;
+        }
+    }
+    ao();
+}
+
 void DriveTrain::DriveToLine(int speed)
 {
     int FL_READING = analog(this->FL_IR_PORT);
     int FR_READING = analog(this->FR_IR_PORT);
-    
+
     bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
-    
+
     int intersects = 0;
 
     while (intersects < 3)
     {
-        Drive(5, speed);
-        
+        Drive(3, speed);
+
         FL_READING = analog(this->FL_IR_PORT);
         FR_READING = analog(this->FR_IR_PORT);
-        
+
         ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
         ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
-        
+
         if (ON_LINE_FL || ON_LINE_FR)
         {
             intersects++;
-        }   
+        }
     }
 }
 
@@ -241,12 +309,12 @@ void DriveTrain::Strafe(int ticks, int speed)
     CAMPC();
 }
 
-void DriveTrain::DriveLeft(int ticks, int speed)
+void DriveTrain::StrafeLeft(int ticks, int speed)
 {
     Strafe(ticks, -speed);
 }
 
-void DriveTrain::DriveRight(int ticks, int speed)
+void DriveTrain::StrafeRight(int ticks, int speed)
 {
     Strafe(ticks, speed);
 }
@@ -255,37 +323,83 @@ void DriveTrain::StrafeToLine(int speed)
 {
     int FL_READING = analog(this->FL_IR_PORT);
     int FR_READING = analog(this->FR_IR_PORT);
-    
+
     bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
-    
+
     int intersects = 0;
 
     while (intersects < 3)
     {
         Strafe(10, speed);
-        
+
         FL_READING = analog(this->FL_IR_PORT);
         FR_READING = analog(this->FR_IR_PORT);
-        
+
         ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
         ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
-        
+
         if (ON_LINE_FL || ON_LINE_FR)
         {
             intersects++;
-        }   
+        }
     }
 }
 
-void DriveTrain::DriveLeftToLine(int speed)
+void DriveTrain::StrafeLeftToLine(int speed)
 {
     StrafeToLine(-speed);
 }
 
-void DriveTrain::DriveRightToLine(int speed)
+void DriveTrain::StrafeRightToLine(int speed)
 {
     StrafeToLine(speed);
+}
+
+void DriveTrain::StrafeOnToLine(int speed)
+{
+    int FL_READING = analog(this->FL_IR_PORT);
+    int FR_READING = analog(this->FR_IR_PORT);
+
+    bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
+    bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
+
+    bool FL_SEEN_BLACK = false;
+    bool FR_SEEN_BLACK = false;
+
+    while (true)
+    {
+        Strafe(10, speed);
+
+        FL_READING = analog(this->FL_IR_PORT);
+        FR_READING = analog(this->FR_IR_PORT);
+
+        ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
+        ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
+
+        if (ON_LINE_FL)
+        {
+            FL_SEEN_BLACK = true;
+        }
+        if (ON_LINE_FR)
+        {
+            FR_SEEN_BLACK = true;
+        }
+        if (FL_SEEN_BLACK && FR_SEEN_BLACK)
+        {
+            break;
+        }
+    }
+}
+
+void DriveTrain::StrafeLeftOnToLine(int speed)
+{
+    StrafeOnToLine(-speed);
+}
+
+void DriveTrain::StrafeRightOnToLine(int speed)
+{
+    StrafeOnToLine(speed);
 }
 
 // Positive ticks and postive speed are forward right
@@ -363,7 +477,7 @@ void DriveTrain::Rotate(int ticks, int speed)
     {
         mav(this->LSM[i], (int)(speed * this->PM[i]));
     }
-    
+
     // Set RSM negative at velocity
     for (int i = 0; i < 2; i++)
     {
