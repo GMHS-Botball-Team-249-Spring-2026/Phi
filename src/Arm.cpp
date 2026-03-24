@@ -1,0 +1,56 @@
+//
+// Created by Connor Denihan on 2/19/26.
+//
+
+#include "Arm.hpp"
+#include <kipr/wombat.h>
+#include <iostream>
+#include <thread>
+
+// THREADED FUNCTION
+void Arm::SetServoPosition(int port, int position)
+{
+    enable_servo(port);
+    if (get_servo_position(port) < position)
+    {
+        for (int i = get_servo_position(port); i < position; i+=5)
+        {
+            set_servo_position(port, i);
+            msleep(10);
+        }
+    }
+    else if (get_servo_position(port) > position)
+    {
+        for (int i = get_servo_position(port); i > position; i-=5)
+        {
+            set_servo_position(port, i);
+            msleep(10);
+        }
+    }
+    else
+    {
+        std::cout << "[WARNING]" << " " << "SERVO ALREADY AT POSTION" << std::endl;
+    }
+    disable_servo(port);
+}
+
+Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort) :
+	ShoulderServoPort(shoulderServoPort), ElbowServoPort(elbowServoPort), ClawServoPort(clawServoPort)
+{
+    // UpdateCurrentServoPositions();
+}
+
+void Arm::SetPosition(ArmPosition position)
+{
+    // Init threads
+	std::thread ShoulderThread(&Arm::SetServoPosition, this, ShoulderServoPort, position.ShoulderPosition);
+    std::thread ElbowThread(&Arm::SetServoPosition, this, ElbowServoPort, position.ElbowPosition);
+    std::thread ClawThread(&Arm::SetServoPosition, this, ClawServoPort, position.ClawPosition);
+    
+    // Wait for threads to exit before returning
+    ShoulderThread.join();
+    ElbowThread.join();
+    ClawThread.join();
+}
+
+Arm::~Arm() = default;
