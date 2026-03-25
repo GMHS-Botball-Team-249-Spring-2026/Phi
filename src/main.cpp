@@ -61,7 +61,6 @@ int main() {
   DriveTrain.RotateRight(TICKS_PER_90, 1000);
   DriveTrain.DriveBackward(3000, 1500);
 
-
   // Push startbox poms
   DriveTrain.DriveForward(750, 1000);
   DriveTrain.StrafeLeftOnToLine(500);
@@ -95,6 +94,7 @@ int main() {
   DriveTrain.DriveForward(750, 1000);
   DriveTrain.DriveBackward(750, 1000);
 
+  // Move the poms into more of a center
   DriveTrain.RotateLeft(TICKS_PER_90 / 3, 1000);
   DriveTrain.RotateRight(TICKS_PER_90 / 3, 1000);
 
@@ -106,16 +106,13 @@ int main() {
   DriveTrain.SquareWithLine(250);
   DriveTrain.DriveBackward(225, 1000);
   DriveTrain.StrafeRight(2750, 1500);
-
   DriveTrain.StrafeLeft(100, 1000);
   DriveTrain.SquareWithLine(250);
   DriveTrain.DriveForward(350, 1000);
   DriveTrain.DriveBackwardToLine(500);
   DriveTrain.DriveBackward(600, 1000);
   DriveTrain.StrafeRight(5250, 1500);
-
   DriveTrain.DriveBackward(650, 1000);
-
 
   // Move poms to be strafed into another box
   DriveTrain.RotateLeft(TICKS_PER_45, 1000);
@@ -147,6 +144,7 @@ int main() {
   DriveTrain.StrafeLeft(1000, 1500);
 
   // Drop traffic cone
+  Arm.SetPosition(DownPositionClosed);
   Arm.SetPosition(DownPositionOpen);
   msleep(1000);
   Arm.SetPosition(UpPositionOpen);
