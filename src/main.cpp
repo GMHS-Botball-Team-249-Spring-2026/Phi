@@ -120,7 +120,7 @@ int main() {
   DriveTrain.DriveBackward(650, 1000);
 
   DriveTrain.RotateLeft(TICKS_PER_45, 1000);
-  DriveTrain.DriveBackward(350, 1000);
+  DriveTrain.DriveBackward(400, 1000);
   DriveTrain.RotateLeft(TICKS_PER_45, 1000);
   DriveTrain.DriveBackward(150, 1000);
 
@@ -133,37 +133,30 @@ int main() {
 
   DriveTrain.DriveForward(1400, 1500);
   DriveTrain.DriveForwardToLine(500);
-  // DriveTrain.DriveForwardLineTracking(1500, 500);
 
   Arm.SetPosition(DownPositionClosed);
   msleep(1000);
   Arm.SetPosition(UpPositionClosed);
 
-  DriveTrain.StrafeLeft(500, 1000);
-  DriveTrain.DriveBackward(750, 1500);
-  DriveTrain.StrafeRight(750, 1000);
-  DriveTrain.DriveForward(2000, 1500);
-  DriveTrain.StrafeLeftOnToLine(500);
-  DriveTrain.DriveBackward(750, 1500);
-  DriveTrain.DriveForwardToLine(500);
+  DriveTrain.DriveForward(1000, 1500);
+  DriveTrain.StrafeLeft(500, 1500);
+  DriveTrain.RotateRight(TICKS_PER_90, 1500);
+  DriveTrain.StrafeLeft(500, 1500);
+  DriveTrain.DriveBackwardToLine(1000);
+  DriveTrain.DriveBackward(450, 1500);
+  DriveTrain.SquareWithLine(250);
 
-  DriveTrain.StrafeLeft(500, 1000);
-  DriveTrain.DriveForward(7500, 1500);
-  DriveTrain.StrafeLeft(4000, 1500);
+  DriveTrain.StrafeLeft(5500, 1500);
 
-  Arm.SetPosition(DownPositionClosed);
-  msleep(1000);
+  DriveTrain.DriveBackward(3000, 1500);
+
+  DriveTrain.RotateLeft(TICKS_PER_90, 1500);
+  DriveTrain.StrafeLeft(1000, 1500);
+
   Arm.SetPosition(DownPositionOpen);
   msleep(1000);
   Arm.SetPosition(UpPositionOpen);
 
-  DriveTrain.StrafeRight(750, 1500);
-  DriveTrain.RotateRight(TICKS_PER_90, 1000);
-  DriveTrain.DriveForwardToLine(500);
-  DriveTrain.DriveBackward(50, 1500);
-  DriveTrain.StrafeRightToLine(500);
-  DriveTrain.SquareWithLine(250);
 
-  Arm.SetPosition(UpPositionOpen);
   return 0;
 }
