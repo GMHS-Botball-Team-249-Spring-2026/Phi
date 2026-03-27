@@ -7,7 +7,6 @@
 #include <kipr/wombat.h>
 #include <thread>
 
-
 // THREADED FUNCTION
 void Arm::SetServoPosition(int port, int position) {
   enable_servo(port);
@@ -28,7 +27,14 @@ void Arm::SetServoPosition(int port, int position) {
 }
 
 Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort)
-    : ShoulderServoPort(shoulderServoPort), ElbowServoPort(elbowServoPort),
+    : ShoulderServoPort(shoulderServoPort), HasElbow(true),
+      ElbowServoPort(elbowServoPort),
+      ClawServoPort(clawServoPort) {
+  // UpdateCurrentServoPositions();
+}
+
+Arm::Arm(int shoulderServoPort, int clawServoPort)
+    : ShoulderServoPort(shoulderServoPort), HasElbow(false), ElbowServoPort(-1),
       ClawServoPort(clawServoPort) {
   // UpdateCurrentServoPositions();
 }
@@ -37,14 +43,20 @@ void Arm::SetPosition(ArmPosition position) {
   // Init threads
   std::thread ShoulderThread(&Arm::SetServoPosition, this, ShoulderServoPort,
                              position.ShoulderPosition);
-  std::thread ElbowThread(&Arm::SetServoPosition, this, ElbowServoPort,
-                          position.ElbowPosition);
   std::thread ClawThread(&Arm::SetServoPosition, this, ClawServoPort,
                          position.ClawPosition);
 
   // Wait for threads to exit before returning
+  if (HasElbow && position.UsesElbow) {
+    std::thread ElbowThread(&Arm::SetServoPosition, this, ElbowServoPort,
+                            position.ElbowPosition);
+    ShoulderThread.join();
+    ElbowThread.join();
+    ClawThread.join();
+    return;
+  }
+
   ShoulderThread.join();
-  ElbowThread.join();
   ClawThread.join();
 }
 

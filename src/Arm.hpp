@@ -21,7 +21,10 @@ private:
   /// Servo port for the shoulder joint.
   const int ShoulderServoPort;
 
-  /// Servo port for the elbow joint.
+  /// True if this arm is configured with an elbow servo.
+  const bool HasElbow;
+
+  /// Servo port for the elbow joint (only valid when HasElbow is true).
   const int ElbowServoPort;
 
   /// Servo port for the claw/gripper.
@@ -48,6 +51,24 @@ public:
 
     /// Desired claw servo position.
     const int ClawPosition;
+
+    /// True when this position includes an elbow target.
+    const bool UsesElbow;
+
+    /**
+     * @brief Constructs a 3-joint arm position (shoulder, elbow, claw).
+     */
+    constexpr ArmPosition(int shoulderPosition, int elbowPosition,
+                          int clawPosition)
+        : ShoulderPosition(shoulderPosition), ElbowPosition(elbowPosition),
+          ClawPosition(clawPosition), UsesElbow(true) {}
+
+    /**
+     * @brief Constructs a 2-joint arm position (shoulder, claw).
+     */
+    constexpr ArmPosition(int shoulderPosition, int clawPosition)
+        : ShoulderPosition(shoulderPosition), ElbowPosition(0),
+          ClawPosition(clawPosition), UsesElbow(false) {}
   };
 
   /**
@@ -64,6 +85,13 @@ public:
    * @param clawServoPort Port for the claw servo.
    */
   Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort);
+
+  /**
+   * @brief Constructs an Arm without an elbow servo.
+   * @param shoulderServoPort Port for the shoulder servo.
+   * @param clawServoPort Port for the claw servo.
+   */
+  Arm(int shoulderServoPort, int clawServoPort);
 
   // Destructor.
   ~Arm();

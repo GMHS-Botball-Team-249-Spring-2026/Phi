@@ -69,7 +69,7 @@ int main() {
   DriveTrain.StrafeLeftOnToLine(500);
   DriveTrain.StrafeRight(1850, 1000);
   DriveTrain.DriveForwardToLine(500);
-  DriveTrain.DriveBackward(150, 500);
+  DriveTrain.DriveBackward(40, 500);
 
   // Rotate and Drive left to push poms
   DriveTrain.RotateLeft(TICKS_PER_90, 1000);
@@ -78,10 +78,10 @@ int main() {
   DriveTrain.StrafeLeft(2750, 1500);
 
   // Get blue poms
-  DriveTrain.StrafeRight(850, 1000);
+  DriveTrain.StrafeRight(900, 1000);
   DriveTrain.DriveForward(775, 1000);
   DriveTrain.DriveForward(2000, 1000);
-  DriveTrain.StrafeLeft(500, 1500);
+  // DriveTrain.StrafeLeft(500, 1500);
 
   DriveTrain.DriveBackwardToLine(1000);
   DriveTrain.DriveBackward(500, 1500);
@@ -120,11 +120,11 @@ int main() {
   DriveTrain.RotateLeft(TICKS_PER_45, 1000);
   DriveTrain.DriveBackward(150, 1000);
   DriveTrain.StrafeRightOnToLine(500);
-  DriveTrain.StrafeRight(250, 1000);
+  // DriveTrain.StrafeRight(250, 1000);
 
   // Get traffic cone
   Arm.SetPosition(DownPositionOpen);
-  DriveTrain.DriveForward(1400, 1500);
+  DriveTrain.DriveForwardLineTracking(1400, 1500);
   DriveTrain.DriveForwardToLine(500);
   Arm.SetPosition(DownPositionClosed);
   msleep(1000);
