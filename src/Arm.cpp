@@ -28,8 +28,7 @@ void Arm::SetServoPosition(int port, int position) {
 
 Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort)
     : ShoulderServoPort(shoulderServoPort), HasElbow(true),
-      ElbowServoPort(elbowServoPort),
-      ClawServoPort(clawServoPort) {
+      ElbowServoPort(elbowServoPort), ClawServoPort(clawServoPort) {
   // UpdateCurrentServoPositions();
 }
 

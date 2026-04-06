@@ -1,4 +1,4 @@
-$RobotIP = "192.168.137.198"
+$RobotIP = "192.168.125.1"
 
 zig build
 scp zig-out/bin/botball_user_program "kipr@${RobotIP}:/home/kipr/"

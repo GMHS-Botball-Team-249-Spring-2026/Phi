@@ -69,7 +69,7 @@ int main() {
   DriveTrain.StrafeLeftOnToLine(500);
   DriveTrain.StrafeRight(1850, 1000);
   DriveTrain.DriveForwardToLine(500);
-  DriveTrain.DriveBackward(40, 500);
+  DriveTrain.DriveBackward(60, 500);
 
   // Rotate and Drive left to push poms
   DriveTrain.RotateLeft(TICKS_PER_90, 1000);
@@ -130,18 +130,16 @@ int main() {
   msleep(1000);
   Arm.SetPosition(UpPositionClosed);
 
-  // Push cube, and RTB
-  DriveTrain.DriveForward(1000, 1500);
-  DriveTrain.StrafeLeft(500, 1500);
-  DriveTrain.RotateRight(TICKS_PER_90, 1500);
-  DriveTrain.StrafeLeft(500, 1500);
-  DriveTrain.DriveBackwardToLine(1000);
-  DriveTrain.DriveBackward(450, 1500);
-  DriveTrain.SquareWithLine(250);
-  DriveTrain.StrafeLeft(5500, 1500);
-  DriveTrain.DriveBackward(3000, 1500);
-  DriveTrain.RotateLeft(TICKS_PER_90, 1500);
-  DriveTrain.StrafeLeft(1000, 1500);
+  DriveTrain.DriveBackward(500, 1500);
+  DriveTrain.StrafeRight(600, 1500);
+  DriveTrain.DriveForward(2000, 1500);
+  DriveTrain.StrafeLeftOnToLine(1500);
+  DriveTrain.StrafeLeft(2500, 1500);
+  DriveTrain.DriveForward(7000, 1500);
+  DriveTrain.StrafeLeft(2000, 1500);
+  DriveTrain.DriveForward(2500, 1500);
+  DriveTrain.StrafeRightOnToLine(500);
+  DriveTrain.DriveDiagonalBackwardLeft(3000, 1500);
 
   // Drop traffic cone
   Arm.SetPosition(DownPositionClosed);
