@@ -52,7 +52,7 @@ int main() {
   DriveTrain.SetLineTrackingThresholds(200, 200, 2000, 2000);
 
   // Setup Arm
-  Arm Arm(0, 1, 2);
+  Arm Arm(0, 2);
   // Set arm position to open
   Arm.SetPosition(UpPositionOpen);
 
