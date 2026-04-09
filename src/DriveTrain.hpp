@@ -93,9 +93,11 @@ public:
   void RotateLeft(int ticks, int speed);
   void RotateRight(int ticks, int speed);
 
-  // Destructor
 
   void SquareWithLine(int speed);
+  void CenterOnLine(int speed);
+
+  // Destructor
   ~DriveTrain();
 };
 

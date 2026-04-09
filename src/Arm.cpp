@@ -8,19 +8,27 @@
 #include <thread>
 
 // THREADED FUNCTION
-void Arm::SetServoPosition(int port, int position) {
+void Arm::SetServoPosition(int port, int position)
+{
   enable_servo(port);
-  if (get_servo_position(port) < position) {
-    for (int i = get_servo_position(port); i < position; i += 5) {
+  if (get_servo_position(port) < position)
+  {
+    for (int i = get_servo_position(port); i < position; i += 5)
+    {
       set_servo_position(port, i);
       msleep(10);
     }
-  } else if (get_servo_position(port) > position) {
-    for (int i = get_servo_position(port); i > position; i -= 5) {
+  }
+  else if (get_servo_position(port) > position)
+  {
+    for (int i = get_servo_position(port); i > position; i -= 5)
+    {
       set_servo_position(port, i);
       msleep(10);
     }
-  } else {
+  }
+  else
+  {
     std::cout << "[WARNING]" << " " << "SERVO ALREADY AT POSTION" << std::endl;
   }
   disable_servo(port);
@@ -28,17 +36,20 @@ void Arm::SetServoPosition(int port, int position) {
 
 Arm::Arm(int shoulderServoPort, int elbowServoPort, int clawServoPort)
     : ShoulderServoPort(shoulderServoPort), HasElbow(true),
-      ElbowServoPort(elbowServoPort), ClawServoPort(clawServoPort) {
+      ElbowServoPort(elbowServoPort), ClawServoPort(clawServoPort)
+{
   // UpdateCurrentServoPositions();
 }
 
 Arm::Arm(int shoulderServoPort, int clawServoPort)
     : ShoulderServoPort(shoulderServoPort), HasElbow(false), ElbowServoPort(-1),
-      ClawServoPort(clawServoPort) {
+      ClawServoPort(clawServoPort)
+{
   // UpdateCurrentServoPositions();
 }
 
-void Arm::SetPosition(ArmPosition position) {
+void Arm::SetPosition(ArmPosition position)
+{
   // Init threads
   std::thread ShoulderThread(&Arm::SetServoPosition, this, ShoulderServoPort,
                              position.ShoulderPosition);
@@ -46,7 +57,8 @@ void Arm::SetPosition(ArmPosition position) {
                          position.ClawPosition);
 
   // Wait for threads to exit before returning
-  if (HasElbow && position.UsesElbow) {
+  if (HasElbow && position.UsesElbow)
+  {
     std::thread ElbowThread(&Arm::SetServoPosition, this, ElbowServoPort,
                             position.ElbowPosition);
     ShoulderThread.join();

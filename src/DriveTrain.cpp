@@ -9,29 +9,37 @@
 
 void DriveTrain::CAMPC() // Clear all motor position counters
 {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++)
+  {
     cmpc(this->AM[i]);
   }
 }
 
-void DriveTrain::WaitForTicksAndStop(int target_ticks, int port) {
-  while (abs(gmpc(this->AM[port])) < abs(target_ticks)) {
+void DriveTrain::WaitForTicksAndStop(int target_ticks, int port)
+{
+  while (abs(gmpc(this->AM[port])) < abs(target_ticks))
+  {
     msleep(10);
   }
   ao();
 }
 
 void DriveTrain::WaitForTicksAndStop(int target_ticks,
-                                     std::array<bool, 4> active_motors) {
+                                     std::array<bool, 4> active_motors)
+{
   int active_count = 0;
-  for (bool is_active : active_motors) {
+  for (bool is_active : active_motors)
+  {
     if (is_active)
       active_count++;
   }
 
-  while (active_count > 0) {
-    for (int i = 0; i < 4; i++) {
-      if (active_motors[i] && abs(gmpc(this->AM[i])) >= abs(target_ticks)) {
+  while (active_count > 0)
+  {
+    for (int i = 0; i < 4; i++)
+    {
+      if (active_motors[i] && abs(gmpc(this->AM[i])) >= abs(target_ticks))
+      {
         off(this->AM[i]);
         active_motors[i] = false;
         active_count--;
@@ -65,7 +73,8 @@ DriveTrain::DriveTrain(int FL, int FR, int RL, int RR, int FL_IR_PORT,
 }
 
 void DriveTrain::SetPerformance(double FLP, double FRP, double RLP,
-                                double RRP) {
+                                double RRP)
+{
   this->FLP = FLP;
   this->FRP = FRP;
   this->RLP = RLP;
@@ -78,7 +87,8 @@ void DriveTrain::SetPerformance(double FLP, double FRP, double RLP,
 }
 
 void DriveTrain::SetLineTrackingThresholds(int FL_WHITE, int FR_WHITE,
-                                           int FL_BLACK, int FR_BLACK) {
+                                           int FL_BLACK, int FR_BLACK)
+{
   this->FL_WHITE_READING = FL_WHITE;
   this->FR_WHITE_READING = FR_WHITE;
   this->FL_BLACK_READING = FL_BLACK;
@@ -90,12 +100,14 @@ void DriveTrain::SetLineTrackingThresholds(int FL_WHITE, int FR_WHITE,
 }
 
 // Positive direction is forward
-void DriveTrain::Drive(int ticks, int speed) {
+void DriveTrain::Drive(int ticks, int speed)
+{
   CAMPC();
   int target_ticks = abs(ticks);
 
   // Start motors at specified speed
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++)
+  {
     mav(this->AM[i], (int)(speed * this->PM[i]));
   }
 
@@ -108,7 +120,8 @@ void DriveTrain::DriveForward(int ticks, int speed) { Drive(ticks, speed); }
 
 void DriveTrain::DriveBackward(int ticks, int speed) { Drive(ticks, -speed); }
 
-void DriveTrain::DriveLineTracking(int ticks, int speed) {
+void DriveTrain::DriveLineTracking(int ticks, int speed)
+{
   CAMPC();
   int target_ticks = abs(ticks);
 
@@ -124,28 +137,21 @@ void DriveTrain::DriveLineTracking(int ticks, int speed) {
     bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
 
-    if ((ON_LINE_FL && ON_LINE_FR) || (!ON_LINE_FL && !ON_LINE_FR)) {
-      // Both sensors on line, drive straight
-      mav(this->AM[0], (int)(speed * this->PM[0]));
-      mav(this->AM[1], (int)(speed * this->PM[1]));
-      mav(this->AM[2], (int)(speed * this->PM[2]));
-      mav(this->AM[3], (int)(speed * this->PM[3]));
-    } else if (ON_LINE_FL && !ON_LINE_FR) {
+    if (ON_LINE_FL && !ON_LINE_FR)
+    {
       // Left sensor on line, right sensor off line, veer right
-      mav(this->AM[0],
-          (int)(speed * this->PM[0] * TRACKED_SIDE_SPEED_PERCENTAGE));
+      mav(this->AM[0], (int)(speed * this->PM[0] * TRACKED_SIDE_SPEED_PERCENTAGE));
       mav(this->AM[1], (int)(speed * this->PM[1]));
-      mav(this->AM[2],
-          (int)(speed * this->PM[2] * TRACKED_SIDE_SPEED_PERCENTAGE));
+      mav(this->AM[2], (int)(speed * this->PM[2] * TRACKED_SIDE_SPEED_PERCENTAGE));
       mav(this->AM[3], (int)(speed * this->PM[3]));
-    } else if (!ON_LINE_FL && ON_LINE_FR) {
+    }
+    else if (!ON_LINE_FL && ON_LINE_FR)
+    {
       // Right sensor on line, left sensor off line, veer left
       mav(this->AM[0], (int)(speed * this->PM[0]));
-      mav(this->AM[1],
-          (int)(speed * this->PM[1] * TRACKED_SIDE_SPEED_PERCENTAGE));
+      mav(this->AM[1], (int)(speed * this->PM[1] * TRACKED_SIDE_SPEED_PERCENTAGE));
       mav(this->AM[2], (int)(speed * this->PM[2]));
-      mav(this->AM[3],
-          (int)(speed * this->PM[3] * TRACKED_SIDE_SPEED_PERCENTAGE));
+      mav(this->AM[3], (int)(speed * this->PM[3] * TRACKED_SIDE_SPEED_PERCENTAGE));
     }
     msleep(10);
   }
@@ -153,16 +159,19 @@ void DriveTrain::DriveLineTracking(int ticks, int speed) {
   CAMPC();
 }
 
-void DriveTrain::DriveForwardLineTracking(int ticks, int speed) {
+void DriveTrain::DriveForwardLineTracking(int ticks, int speed)
+{
   DriveLineTracking(ticks, speed);
 }
 
 // It works, but its really bad. Not reccomended to use backward line tracking
-void DriveTrain::DriveBackwardLineTracking(int ticks, int speed) {
+void DriveTrain::DriveBackwardLineTracking(int ticks, int speed)
+{
   DriveLineTracking(ticks, -speed);
 }
 
-void DriveTrain::SquareWithLine(int speed) {
+void DriveTrain::SquareWithLine(int speed)
+{
   int FL_READING = analog(this->FL_IR_PORT);
   int FR_READING = analog(this->FR_IR_PORT);
 
@@ -171,35 +180,48 @@ void DriveTrain::SquareWithLine(int speed) {
 
   int intersects = 0;
 
-  while (!ON_LINE_FL || !ON_LINE_FR) {
-    if (!ON_LINE_FL && !ON_LINE_FR) {
+  while (!ON_LINE_FL || !ON_LINE_FR)
+  {
+    if (!ON_LINE_FL && !ON_LINE_FR)
+    {
       // Both sensors off line, drive straight
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++)
+      {
         mav(this->AM[i], (int)(speed * this->PM[i]));
       }
-    } else if (ON_LINE_FL && !ON_LINE_FR) {
+    }
+    else if (ON_LINE_FL && !ON_LINE_FR)
+    {
       // Left sensor on line, right sensor off line, veer right
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++)
+      {
         mav(this->RSM[i], (int)(speed));
       }
 
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++)
+      {
         mav(this->LSM[i], (int)(-speed * 2));
       }
-    } else if (!ON_LINE_FL && ON_LINE_FR) {
+    }
+    else if (!ON_LINE_FL && ON_LINE_FR)
+    {
       // Right sensor on line, left sensor off line, veer left
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++)
+      {
         mav(this->LSM[i], (int)(speed));
       }
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++)
+      {
         mav(this->RSM[i], (int)(-speed * 2));
       }
     }
 
-    else if (ON_LINE_FL && ON_LINE_FR) {
+    else if (ON_LINE_FL && ON_LINE_FR)
+    {
       // Both sensors on line drive backwards until they both aren't on the line
       // so accuratly square
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++)
+      {
         mav(this->AM[i], (int)(-speed * this->PM[i]));
       }
     }
@@ -210,14 +232,16 @@ void DriveTrain::SquareWithLine(int speed) {
     ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
 
-    if (ON_LINE_FL || ON_LINE_FR) {
+    if (ON_LINE_FL || ON_LINE_FR)
+    {
       intersects++;
     }
   }
   ao();
 }
 
-void DriveTrain::DriveToLine(int speed) {
+void DriveTrain::CenterOnLine(int speed)
+{
   int FL_READING = analog(this->FL_IR_PORT);
   int FR_READING = analog(this->FR_IR_PORT);
 
@@ -226,7 +250,78 @@ void DriveTrain::DriveToLine(int speed) {
 
   int intersects = 0;
 
-  while (intersects < 3) {
+  while (ON_LINE_FL && ON_LINE_FR)
+  {
+    if (!ON_LINE_FL && !ON_LINE_FR)
+    {
+      // Both sensors off line, drive straight
+      for (int i = 0; i < 4; i++)
+      {
+        mav(this->AM[i], (int)(speed * this->PM[i]));
+      }
+    }
+    else if (ON_LINE_FL && !ON_LINE_FR)
+    {
+      // Left sensor on line, right sensor off line, veer right
+      for (int i = 0; i < 4; i++)
+      {
+        mav(this->RSM[i], (int)(speed));
+      }
+
+      for (int i = 0; i < 4; i++)
+      {
+        mav(this->LSM[i], (int)(-speed * 2));
+      }
+    }
+    else if (!ON_LINE_FL && ON_LINE_FR)
+    {
+      // Right sensor on line, left sensor off line, veer left
+      for (int i = 0; i < 4; i++)
+      {
+        mav(this->LSM[i], (int)(speed));
+      }
+      for (int i = 0; i < 4; i++)
+      {
+        mav(this->RSM[i], (int)(-speed * 2));
+      }
+    }
+
+    else if (ON_LINE_FL && ON_LINE_FR)
+    {
+      // Both sensors on line drive backwards until they both aren't on the line
+      // so accuratly square
+      for (int i = 0; i < 4; i++)
+      {
+        mav(this->AM[i], (int)(-speed * this->PM[i]));
+      }
+    }
+
+    FL_READING = analog(this->FL_IR_PORT);
+    FR_READING = analog(this->FR_IR_PORT);
+
+    ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
+    ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
+
+    if (ON_LINE_FL || ON_LINE_FR)
+    {
+      intersects++;
+    }
+  }
+  ao();
+}
+
+void DriveTrain::DriveToLine(int speed)
+{
+  int FL_READING = analog(this->FL_IR_PORT);
+  int FR_READING = analog(this->FR_IR_PORT);
+
+  bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
+  bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
+
+  int intersects = 0;
+
+  while (intersects < 3)
+  {
     Drive(3, speed);
 
     FL_READING = analog(this->FL_IR_PORT);
@@ -235,7 +330,8 @@ void DriveTrain::DriveToLine(int speed) {
     ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
 
-    if (ON_LINE_FL || ON_LINE_FR) {
+    if (ON_LINE_FL || ON_LINE_FR)
+    {
       intersects++;
     }
   }
@@ -246,7 +342,8 @@ void DriveTrain::DriveForwardToLine(int speed) { DriveToLine(speed); }
 void DriveTrain::DriveBackwardToLine(int speed) { DriveToLine(-speed); }
 
 // Positive direction is right
-void DriveTrain::Strafe(int ticks, int speed) {
+void DriveTrain::Strafe(int ticks, int speed)
+{
   CAMPC();
   int target_ticks = abs(ticks);
 
@@ -267,7 +364,8 @@ void DriveTrain::StrafeLeft(int ticks, int speed) { Strafe(ticks, -speed); }
 
 void DriveTrain::StrafeRight(int ticks, int speed) { Strafe(ticks, speed); }
 
-void DriveTrain::StrafeToLine(int speed) {
+void DriveTrain::StrafeToLine(int speed)
+{
   int FL_READING = analog(this->FL_IR_PORT);
   int FR_READING = analog(this->FR_IR_PORT);
 
@@ -276,7 +374,8 @@ void DriveTrain::StrafeToLine(int speed) {
 
   int intersects = 0;
 
-  while (intersects < 3) {
+  while (intersects < 3)
+  {
     Strafe(10, speed);
 
     FL_READING = analog(this->FL_IR_PORT);
@@ -285,7 +384,8 @@ void DriveTrain::StrafeToLine(int speed) {
     ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
 
-    if (ON_LINE_FL || ON_LINE_FR) {
+    if (ON_LINE_FL || ON_LINE_FR)
+    {
       intersects++;
     }
   }
@@ -295,7 +395,8 @@ void DriveTrain::StrafeLeftToLine(int speed) { StrafeToLine(-speed); }
 
 void DriveTrain::StrafeRightToLine(int speed) { StrafeToLine(speed); }
 
-void DriveTrain::StrafeOnToLine(int speed) {
+void DriveTrain::StrafeOnToLine(int speed)
+{
   int FL_READING = analog(this->FL_IR_PORT);
   int FR_READING = analog(this->FR_IR_PORT);
 
@@ -305,7 +406,8 @@ void DriveTrain::StrafeOnToLine(int speed) {
   bool FL_SEEN_BLACK = false;
   bool FR_SEEN_BLACK = false;
 
-  while (true) {
+  while (true)
+  {
     Strafe(10, speed);
 
     FL_READING = analog(this->FL_IR_PORT);
@@ -314,13 +416,16 @@ void DriveTrain::StrafeOnToLine(int speed) {
     ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
 
-    if (ON_LINE_FL) {
+    if (ON_LINE_FL)
+    {
       FL_SEEN_BLACK = true;
     }
-    if (ON_LINE_FR) {
+    if (ON_LINE_FR)
+    {
       FR_SEEN_BLACK = true;
     }
-    if (FL_SEEN_BLACK && FR_SEEN_BLACK) {
+    if (FL_SEEN_BLACK && FR_SEEN_BLACK)
+    {
       break;
     }
   }
@@ -332,7 +437,8 @@ void DriveTrain::StrafeRightOnToLine(int speed) { StrafeOnToLine(speed); }
 
 // Positive ticks and postive speed are forward right
 // Negative ticks and positive speed are backward right
-void DriveTrain::Diagonal(int ticks, int speed) {
+void DriveTrain::Diagonal(int ticks, int speed)
+{
   CAMPC();
   int target_ticks =
       abs(ticks); // FIX: was 'ticks', caused infinite hang on negative ticks
@@ -344,24 +450,29 @@ void DriveTrain::Diagonal(int ticks, int speed) {
     mav(this->FL, (int)(speed * this->FLP));
     mav(this->RR, (int)(speed * this->RRP));
     active = {true, false, false, true}; // FL=0, RR=3
-  } else if (ticks > 0 && speed < 0)     // Forward left (FR + RL, both forward)
+  }
+  else if (ticks > 0 && speed < 0) // Forward left (FR + RL, both forward)
   {
     // FIX: was (speed * ...) which drove backward; negate so motors spin
     // forward
     mav(this->FR, (int)(-speed * this->FRP));
     mav(this->RL, (int)(-speed * this->RLP));
     active = {false, true, true, false}; // FR=1, RL=2
-  } else if (ticks < 0 && speed > 0) // Backward right (FR + RL, both backward)
+  }
+  else if (ticks < 0 && speed > 0) // Backward right (FR + RL, both backward)
   {
     mav(this->FR, (int)(-speed * this->FRP));
     mav(this->RL, (int)(-speed * this->RLP));
     active = {false, true, true, false}; // FR=1, RL=2
-  } else if (ticks < 0 && speed < 0) // Backward left (FL + RR, both backward)
+  }
+  else if (ticks < 0 && speed < 0) // Backward left (FL + RR, both backward)
   {
     mav(this->FL, (int)(speed * this->FLP));
     mav(this->RR, (int)(speed * this->RRP));
     active = {true, false, false, true}; // FL=0, RR=3
-  } else {
+  }
+  else
+  {
     std::cout << "WARNING" << " " << "INVALID DIAGONAL INPUT" << std::endl;
     return;
   }
@@ -370,34 +481,41 @@ void DriveTrain::Diagonal(int ticks, int speed) {
   CAMPC();
 }
 
-void DriveTrain::DriveDiagonalForwardLeft(int ticks, int speed) {
+void DriveTrain::DriveDiagonalForwardLeft(int ticks, int speed)
+{
   Diagonal(ticks, -speed);
 }
 
-void DriveTrain::DriveDiagonalForwardRight(int ticks, int speed) {
+void DriveTrain::DriveDiagonalForwardRight(int ticks, int speed)
+{
   Diagonal(ticks, speed);
 }
 
-void DriveTrain::DriveDiagonalBackwardLeft(int ticks, int speed) {
+void DriveTrain::DriveDiagonalBackwardLeft(int ticks, int speed)
+{
   Diagonal(-ticks, -speed);
 }
 
-void DriveTrain::DriveDiagonalBackwardRight(int ticks, int speed) {
+void DriveTrain::DriveDiagonalBackwardRight(int ticks, int speed)
+{
   Diagonal(-ticks, speed);
 }
 
 // Positive direction is clockwise
-void DriveTrain::Rotate(int ticks, int speed) {
+void DriveTrain::Rotate(int ticks, int speed)
+{
   CAMPC();
   int target_ticks = abs(ticks);
 
   // Set LSM positive at velocity
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 2; i++)
+  {
     mav(this->LSM[i], (int)(speed * this->PM[i]));
   }
 
   // Set RSM negative at velocity
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 2; i++)
+  {
     mav(this->RSM[i], (int)(-speed * this->PM[i]));
   }
 
