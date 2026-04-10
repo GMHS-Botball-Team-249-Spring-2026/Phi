@@ -13,7 +13,7 @@ void Arm::SetServoPosition(int port, int position)
   enable_servo(port);
   if (get_servo_position(port) < position)
   {
-    for (int i = get_servo_position(port); i < position; i += 5)
+    for (int i = get_servo_position(port); i < position; i += 10)
     {
       set_servo_position(port, i);
       msleep(10);
@@ -21,7 +21,7 @@ void Arm::SetServoPosition(int port, int position)
   }
   else if (get_servo_position(port) > position)
   {
-    for (int i = get_servo_position(port); i > position; i -= 5)
+    for (int i = get_servo_position(port); i > position; i -= 10)
     {
       set_servo_position(port, i);
       msleep(10);

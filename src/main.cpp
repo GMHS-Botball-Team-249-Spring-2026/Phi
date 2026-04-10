@@ -44,6 +44,14 @@ constexpr int TICKS_PER_90 = TICKS_PER_180 / 2;
 constexpr int TICKS_PER_45 = TICKS_PER_180 / 4;
 constexpr int TICKS_PER_DEGREE = TICKS_PER_180 / 180;
 
+void wait_for_light_cdenihan_edition(int light_port)
+{
+    while (analog(light_port) > 100)
+    {
+        msleep(10);
+    }
+}
+
 int main()
 {
     // Setup Drivetrain
@@ -61,6 +69,9 @@ int main()
     Arm.SetPosition(UpPositionOpen);
 
     // wait_for_light(2);
+    std::cout << "Awaiting Light..." << std::endl;
+    wait_for_light_cdenihan_edition(2);
+    std::cout << "Light Found..." << std::endl;
     shut_down_in(118);
 
     // Rotate & Drive into side
@@ -83,14 +94,16 @@ int main()
     DriveTrain.StrafeRight(75, 1000);
     DriveTrain.DriveForwardToLine(500);
     DriveTrain.DriveForward(1450, 1000);
-    DriveTrain.StrafeLeft(2750, 1500);
+    DriveTrain.StrafeLeft(2650, 1500);
 
     // Get blue poms
-    DriveTrain.StrafeRight(900, 1000);
+    DriveTrain.StrafeRight(850, 1000);
     DriveTrain.DriveForward(775, 1000);
     DriveTrain.DriveForward(2000, 1000);
-    msleep(8500); // 7500
-    // DriveTrain.StrafeLeft(500, 1500);
+    // DriveTrain.StrafeLeft(200, 1500);
+    // DriveTrain.RotateLeft(TICKS_PER_DEGREE * 5, 500);
+    // DriveTrain.StrafeRight(20, 1500);
+    msleep(10000); // 7500
 
     DriveTrain.DriveBackwardToLine(1000);
     DriveTrain.DriveBackward(500, 1500);
@@ -99,28 +112,30 @@ int main()
 
     // Start pushing my orange poms
     DriveTrain.StrafeRight(2500, 1500);
+    DriveTrain.StrafeLeft(200, 1500);
 
     DriveTrain.DriveForward(750, 1000);
     DriveTrain.DriveBackward(750, 1000);
+    DriveTrain.StrafeRight(200, 1500);
 
     // Move the poms into more of a center
-    DriveTrain.RotateLeft(TICKS_PER_90 / 3, 1000);
     DriveTrain.RotateRight(TICKS_PER_90 / 3, 1000);
+    DriveTrain.RotateLeft(TICKS_PER_90 / 3, 1000);
 
     DriveTrain.DriveForward(400, 1500);
 
-    DriveTrain.RotateRight(TICKS_PER_90 / 3, 1000);
     DriveTrain.RotateLeft(TICKS_PER_90 / 3, 1000);
+    DriveTrain.RotateRight(TICKS_PER_90 / 3, 1000);
 
     DriveTrain.SquareWithLine(250);
     DriveTrain.DriveBackward(225, 1000);
-    DriveTrain.StrafeRight(2750, 1500);
+    DriveTrain.StrafeRight(2900, 1500);
     DriveTrain.StrafeLeft(100, 1000);
     DriveTrain.SquareWithLine(250);
     DriveTrain.DriveForward(350, 1000);
     DriveTrain.DriveBackwardToLine(500);
     DriveTrain.DriveBackward(600, 1000);
-    DriveTrain.StrafeRight(5250, 1500);
+    DriveTrain.StrafeRight(4600, 1500);
     DriveTrain.DriveBackward(650, 1000);
 
     // Move poms to be strafed into another box
@@ -130,28 +145,32 @@ int main()
     // DriveTrain.DriveBackward(150, 1000);
     DriveTrain.StrafeRightOnToLine(500);
     DriveTrain.CenterOnLine(250);
+    msleep(500);
     DriveTrain.StrafeRight(100, 1500);
     // DriveTrain.StrafeLeftOnToLine(500);
     // DriveTrain.StrafeRight(250, 1000);
 
     // Get traffic cone
     Arm.SetPosition(DownPositionOpen);
-    DriveTrain.DriveForward(1400, 1500);
+    DriveTrain.DriveForward(500, 1500);
     DriveTrain.DriveForwardToLine(500);
     Arm.SetPosition(DownPositionClosed);
-    msleep(1000);
+    msleep(500);
     Arm.SetPosition(UpPositionClosed);
 
-    DriveTrain.DriveBackward(500, 1500);
-    DriveTrain.StrafeRight(600, 1500);
-    DriveTrain.DriveForward(2000, 1500);
+    // DriveTrain.DriveBackward(500, 1500);
+    DriveTrain.StrafeRight(300, 1500);
+    DriveTrain.DriveForward(1000, 1500);
     DriveTrain.StrafeLeftOnToLine(1500);
-    DriveTrain.StrafeLeft(1000, 1500);
-    DriveTrain.DriveBackward(1500, 1500);
-    DriveTrain.StrafeLeft(750, 1500);
-    DriveTrain.RotateLeft(TICKS_PER_DEGREE * 15, 500);
-    DriveTrain.StrafeRight(20, 1500);
-    DriveTrain.DriveForward(8500, 1500);
+    DriveTrain.StrafeLeft(2500, 1500);
+
+    // DriveTrain.DriveBackward(1250, 1500);
+    // DriveTrain.RotateRight(TICKS_PER_DEGREE * 3, 500);
+
+    DriveTrain.StrafeRight(35, 1500);
+    DriveTrain.DriveForward(2000, 1500);
+    DriveTrain.StrafeRight(50, 1500);
+    DriveTrain.DriveForward(6000, 1500);
     DriveTrain.StrafeLeft(2000, 1500);
     DriveTrain.DriveForward(2500, 1500);
     DriveTrain.StrafeRightOnToLine(500);

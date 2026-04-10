@@ -193,12 +193,12 @@ void DriveTrain::SquareWithLine(int speed)
     else if (ON_LINE_FL && !ON_LINE_FR)
     {
       // Left sensor on line, right sensor off line, veer right
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->RSM[i], (int)(speed));
       }
 
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->LSM[i], (int)(-speed * 2));
       }
@@ -206,11 +206,11 @@ void DriveTrain::SquareWithLine(int speed)
     else if (!ON_LINE_FL && ON_LINE_FR)
     {
       // Right sensor on line, left sensor off line, veer left
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->LSM[i], (int)(speed));
       }
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->RSM[i], (int)(-speed * 2));
       }
@@ -248,27 +248,21 @@ void DriveTrain::CenterOnLine(int speed)
   bool ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
   bool ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
 
-  int intersects = 0;
-
-  while (ON_LINE_FL && ON_LINE_FR)
+  while (ON_LINE_FL || ON_LINE_FR)
   {
     if (!ON_LINE_FL && !ON_LINE_FR)
     {
-      // Both sensors off line, drive straight
-      for (int i = 0; i < 4; i++)
-      {
-        mav(this->AM[i], (int)(speed * this->PM[i]));
-      }
+      break;
     }
     else if (ON_LINE_FL && !ON_LINE_FR)
     {
       // Left sensor on line, right sensor off line, veer right
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->RSM[i], (int)(speed));
       }
 
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->LSM[i], (int)(-speed * 2));
       }
@@ -276,23 +270,26 @@ void DriveTrain::CenterOnLine(int speed)
     else if (!ON_LINE_FL && ON_LINE_FR)
     {
       // Right sensor on line, left sensor off line, veer left
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->LSM[i], (int)(speed));
       }
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 2; i++)
       {
         mav(this->RSM[i], (int)(-speed * 2));
       }
     }
 
-    else if (ON_LINE_FL && ON_LINE_FR)
+    else
     {
-      // Both sensors on line drive backwards until they both aren't on the line
-      // so accuratly square
-      for (int i = 0; i < 4; i++)
+      // Right sensor on line, left sensor off line, veer left
+      for (int i = 0; i < 2; i++)
       {
-        mav(this->AM[i], (int)(-speed * this->PM[i]));
+        mav(this->LSM[i], (int)(speed));
+      }
+      for (int i = 0; i < 2; i++)
+      {
+        mav(this->RSM[i], (int)(-speed * 2));
       }
     }
 
@@ -301,11 +298,6 @@ void DriveTrain::CenterOnLine(int speed)
 
     ON_LINE_FL = FL_READING > this->FL_THRESHOLD;
     ON_LINE_FR = FR_READING > this->FR_THRESHOLD;
-
-    if (ON_LINE_FL || ON_LINE_FR)
-    {
-      intersects++;
-    }
   }
   ao();
 }
