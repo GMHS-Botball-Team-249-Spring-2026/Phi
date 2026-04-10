@@ -46,7 +46,7 @@ constexpr int TICKS_PER_DEGREE = TICKS_PER_180 / 180;
 
 void wait_for_light_cdenihan_edition(int light_port)
 {
-    while (analog(light_port) > 100)
+    while (analog(light_port) > 500)
     {
         msleep(10);
     }
@@ -68,10 +68,10 @@ int main()
     // Set arm position to open
     Arm.SetPosition(UpPositionOpen);
 
-    // wait_for_light(2);
-    std::cout << "Awaiting Light..." << std::endl;
-    wait_for_light_cdenihan_edition(2);
-    std::cout << "Light Found..." << std::endl;
+    wait_for_light(2);
+    // std::cout << "Awaiting Light..." << std::endl;
+    // wait_for_light_cdenihan_edition(2);
+    // std::cout << "Light Found..." << std::endl;
     shut_down_in(118);
 
     // Rotate & Drive into side
@@ -165,11 +165,11 @@ int main()
     DriveTrain.StrafeLeft(2500, 1500);
 
     // DriveTrain.DriveBackward(1250, 1500);
-    // DriveTrain.RotateRight(TICKS_PER_DEGREE * 3, 500);
+    DriveTrain.RotateLeft(TICKS_PER_DEGREE * 3, 500);
 
-    DriveTrain.StrafeRight(35, 1500);
-    DriveTrain.DriveForward(2000, 1500);
     DriveTrain.StrafeRight(50, 1500);
+    DriveTrain.DriveForward(2000, 1500);
+    DriveTrain.StrafeRight(60, 1500);
     DriveTrain.DriveForward(6000, 1500);
     DriveTrain.StrafeLeft(2000, 1500);
     DriveTrain.DriveForward(2500, 1500);
