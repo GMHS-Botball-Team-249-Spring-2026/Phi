@@ -18,7 +18,7 @@ namespace ElbowPositions
 
 namespace ClawPositions
 {
-    constexpr int CLOSED = 2000;
+    constexpr int CLOSED = 2047;
     constexpr int OPEN = 850;
 } // namespace ClawPositions
 
@@ -44,14 +44,6 @@ constexpr int TICKS_PER_90 = TICKS_PER_180 / 2;
 constexpr int TICKS_PER_45 = TICKS_PER_180 / 4;
 constexpr int TICKS_PER_DEGREE = TICKS_PER_180 / 180;
 
-void wait_for_light_cdenihan_edition(int light_port)
-{
-    while (analog(light_port) > 500)
-    {
-        msleep(10);
-    }
-}
-
 int main()
 {
     // Setup Drivetrain
@@ -61,7 +53,7 @@ int main()
 
     // Set performance and line tracking thresholds
     DriveTrain.SetPerformance(1.0, 1.0, 1.00, 1.00);
-    DriveTrain.SetLineTrackingThresholds(200, 200, 2000, 2000);
+    DriveTrain.SetLineTrackingThresholds(225, 225, 2000, 2000);
 
     // Setup Arm
     Arm Arm(0, 2);
@@ -69,9 +61,6 @@ int main()
     Arm.SetPosition(UpPositionOpen);
 
     wait_for_light(2);
-    // std::cout << "Awaiting Light..." << std::endl;
-    // wait_for_light_cdenihan_edition(2);
-    // std::cout << "Light Found..." << std::endl;
     shut_down_in(118);
 
     // Rotate & Drive into side
@@ -97,13 +86,13 @@ int main()
     DriveTrain.StrafeLeft(2650, 1500);
 
     // Get blue poms
-    DriveTrain.StrafeRight(850, 1000);
+    DriveTrain.StrafeRight(900, 1000);
     DriveTrain.DriveForward(775, 1000);
     DriveTrain.DriveForward(2000, 1000);
     // DriveTrain.StrafeLeft(200, 1500);
     // DriveTrain.RotateLeft(TICKS_PER_DEGREE * 5, 500);
     // DriveTrain.StrafeRight(20, 1500);
-    msleep(10000); // 7500
+    msleep(1000); // 7500
 
     DriveTrain.DriveBackwardToLine(1000);
     DriveTrain.DriveBackward(500, 1500);
@@ -115,7 +104,10 @@ int main()
     DriveTrain.StrafeLeft(200, 1500);
 
     DriveTrain.DriveForward(750, 1000);
-    DriveTrain.DriveBackward(750, 1000);
+    DriveTrain.DriveBackwardToLine(1000);
+    DriveTrain.DriveBackward(500, 1500);
+    DriveTrain.SquareWithLine(250);
+    DriveTrain.DriveBackward(225, 1000);
     DriveTrain.StrafeRight(200, 1500);
 
     // Move the poms into more of a center
@@ -127,14 +119,20 @@ int main()
     DriveTrain.RotateLeft(TICKS_PER_90 / 3, 1000);
     DriveTrain.RotateRight(TICKS_PER_90 / 3, 1000);
 
-    DriveTrain.SquareWithLine(250);
-    DriveTrain.DriveBackward(225, 1000);
-    DriveTrain.StrafeRight(2900, 1500);
-    DriveTrain.StrafeLeft(100, 1000);
-    DriveTrain.SquareWithLine(250);
-    DriveTrain.DriveForward(350, 1000);
     DriveTrain.DriveBackwardToLine(500);
     DriveTrain.DriveBackward(600, 1000);
+    DriveTrain.SquareWithLine(250);
+    DriveTrain.DriveBackward(225, 1000);
+
+    DriveTrain.StrafeRight(2900, 1500);
+    DriveTrain.StrafeLeft(100, 1000);
+
+    DriveTrain.DriveForward(500, 1500);
+    DriveTrain.DriveBackwardToLine(1000);
+    DriveTrain.DriveBackward(500, 1500);
+    DriveTrain.SquareWithLine(250);
+    DriveTrain.DriveBackward(225, 1000);
+
     DriveTrain.StrafeRight(4600, 1500);
     DriveTrain.DriveBackward(650, 1000);
 
@@ -162,15 +160,19 @@ int main()
     DriveTrain.StrafeRight(300, 1500);
     DriveTrain.DriveForward(1000, 1500);
     DriveTrain.StrafeLeftOnToLine(1500);
-    DriveTrain.StrafeLeft(2500, 1500);
+    DriveTrain.StrafeLeft(750, 1500);
+
+    DriveTrain.DriveBackward(250, 1500);
+    DriveTrain.StrafeLeft(1250, 1500);
 
     // DriveTrain.DriveBackward(1250, 1500);
     DriveTrain.RotateLeft(TICKS_PER_DEGREE * 3, 500);
 
     DriveTrain.StrafeRight(50, 1500);
-    DriveTrain.DriveForward(2000, 1500);
+    DriveTrain.DriveForward(1000, 1500);
+    DriveTrain.StrafeLeft(100, 1500);
     DriveTrain.StrafeRight(60, 1500);
-    DriveTrain.DriveForward(6000, 1500);
+    DriveTrain.DriveForward(7000, 1500);
     DriveTrain.StrafeLeft(2000, 1500);
     DriveTrain.DriveForward(2500, 1500);
     DriveTrain.StrafeRightOnToLine(500);
@@ -181,5 +183,7 @@ int main()
     Arm.SetPosition(DownPositionOpen);
     msleep(1000);
     Arm.SetPosition(UpPositionOpen);
+
+    std::cout << "OH YEAH! Vectors! Thumbs Down! Rocky: Why Grace's room so dirty question question." << std::endl;
     return 0;
 }

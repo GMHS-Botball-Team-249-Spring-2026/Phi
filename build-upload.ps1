@@ -1,4 +1,4 @@
-$RobotIP = "192.168.125.1"
+$RobotIP = "192.168.124.1"
 
 zig build
 
